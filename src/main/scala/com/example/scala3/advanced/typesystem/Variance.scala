@@ -6,7 +6,7 @@ final class Cat extends Animal
 
 object Covariance extends App {
 
-  // Variance question for lists: if Dog extends Animal, does List[Dog] extends List[Animal]
+  // Variance question for lists: if Dog extends Animal, does List[Dog] extends List[Animal]?
 
   // by default, based on Scala List implementation, the answer is YES.
   // because lists are COVARIANT:
@@ -29,7 +29,7 @@ object Contravariant extends App {
   sealed trait Animal
   final class Dog extends Animal
 
-  // CONTRAVARIANT - if a vet can heal animals, for sure he/she can heal dogs
+  // CONTRAVARIANT - if a vet can heal dogs, for sure (it's implicit) that he/she can heal animals
   // So contravariance can be seen the other way around as variance
   sealed trait Vet[-A] {
     def heal(animal: A): Boolean
