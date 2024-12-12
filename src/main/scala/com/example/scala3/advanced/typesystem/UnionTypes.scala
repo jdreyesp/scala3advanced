@@ -79,10 +79,17 @@ object IntersectionTypes extends App {
 
   useSmartDevice(
     new SmartPhone
-  ) // This will use "snap" (see diamond problem in AdvancedInheritance.scala)
+  ) // This will use "snap" since:
+  // SmartPhone extends <AnyRef> with <Phone> with <Gadget> with <Camera> with <SmartPhone>
+  //                                                                ^^
+  // camera.use will be taken here
+  // (see diamond problem in AdvancedInheritance.scala)
   useSmartDevice(
     new CameraWithPhone
-  ) // This will use "ring" (see diamond problem in AdvancedInheritance.scala)
+  ) // This will use "ring" since:
+  // CameraWithPhone extends <AnyRef> with <Camera> with <Gadget> with <Phone> with <SmartPhone>
+  //                                                                      ^^
+  // (see diamond problem in AdvancedInheritance.scala)
 
   // Combination of intersection types and covariance
   trait HostConfig
