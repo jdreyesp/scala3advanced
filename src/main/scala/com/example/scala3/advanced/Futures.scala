@@ -8,6 +8,7 @@ import scala.util.{Try, Failure, Success}
 import scala.concurrent.Await
 import scala.util.Random
 import scala.concurrent.duration._
+import scala.concurrent.Promise
 
 object Futures extends App {
 
@@ -171,6 +172,35 @@ object Futures extends App {
     }
   }
 
+  /*
+    Promises: Allows you to manually control the completion of a Future
+
+    They're useful when passing the promise through other methods, so that inside those methods we control when the future inside the promise
+    can be completed
+   */
+
+  def demoPromises() = {
+    val promise = Promise[Int]()
+    val futureInside: Future[Int] = promise.future
+
+    // thread 1 - 'consumer': monitor the future for completion
+    futureInside.onComplete {
+      case Success(value) =>
+        println(s"[consumer] I've just been completed with $value")
+      case Failure(ex) => ex.printStackTrace()
+    }
+
+    // thread 2 - 'producer'
+    val producerThread = new Thread(() =>
+      println("[producer] Crunching numbers...")
+      Thread.sleep(100)
+      promise.success(42)
+      println("[producer] I'm done.")
+    )
+
+    producerThread.start()
+  }
+
   // executor.shutdown()
 
   // println(futureInstantResult)
@@ -179,9 +209,10 @@ object Futures extends App {
   //   "rtjvm.id.2-jane",
   //   "Hey best friend, nice to talk to you again"
   // )
-  println("Purchasing...")
-  BankingApp.purchase("daniel-234", "shoes", "merchan-987", 3.56)
+  // println("Purchasing...")
+  // BankingApp.purchase("daniel-234", "shoes", "merchan-987", 3.56)
   // println("purchase complete")
-  Thread.sleep(2000)
+  demoPromises()
+  Thread.sleep(3000)
   executor.shutdown()
 }
